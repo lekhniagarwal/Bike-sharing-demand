@@ -1,0 +1,86 @@
+from sklearn.ensemble import RandomForestClassifier
+import numpy as np
+import pandas as pd
+from datetime import datetime
+
+dataset= pd.read_csv("G:/technical/python/bikerent/train.csv")
+
+test= pd.read_csv("G:/technical/python/bikerent/test.csv")
+
+
+target = dataset["count"].values
+
+train = dataset
+
+#feature engineering of train
+def transform_data(df):
+    epoch = datetime.utcfromtimestamp(0)
+    datetime_values = df['datetime'].values
+    time_values = []
+    date_values = []
+    month_values = []
+    year_values =[]
+    weekday_values = []
+    isSunday_values = []
+    time_since_epoch_values = []
+    for i in datetime_values:
+        datetime_object = datetime.strptime(i, '%m/%d/%Y %H:%M')
+        time_values.append(datetime_object.hour)
+        date_values.append(datetime_object.day)
+        month_values.append(datetime_object.month)
+        year_values.append(datetime_object.year)
+        weekday_values.append(datetime_object.weekday())
+        isSunday_values.append(1 if datetime_object.weekday() == 6 else 0)
+        time_since_epoch_values.append(int((datetime_object-epoch).total_seconds()/3600))
+    df['time'] = time_values
+    df['date'] = date_values
+    df['month'] = month_values
+    df['year'] = year_values
+    df['weekday'] = weekday_values
+    df['isSunday'] = isSunday_values
+    df['time_since_epoch'] = time_since_epoch_values
+    return df
+
+
+train = transform_data(train)
+test = transform_data(test)
+
+#feature engineering of test
+datetime_values = []
+for i in test["datetime"].values:
+    d = datetime.strptime(i, '%m/%d/%Y %H:%M')
+    i = d.strftime('%Y-%m-%d %H:%M:%S')
+    datetime_values.append(i) 
+    
+test['datetime'] = datetime_values
+
+date = test['datetime'] 
+#drop some redundant columns
+train.drop(["datetime","casual","registered" , "count"], axis=1, inplace=True)
+
+test.drop(["datetime"], axis=1, inplace=True)
+
+
+print("KK")         
+            
+
+
+        
+#model = RandomForestClassifier(n_estimators=100)
+
+#model.fit(train, target)
+
+#prediction = model.predict(test)
+
+
+#pred = pd.DataFrame({'count':prediction})
+#my_solution= pd.concat([date , pred] ,axis=1)
+
+
+
+#my_solution.to_csv("G:/technical/python/bikerent/randomforest.csv", index = False)
+
+
+
+
+

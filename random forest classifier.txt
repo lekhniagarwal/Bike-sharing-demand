@@ -1,0 +1,62 @@
+from sklearn.ensemble import RandomForestClassifier
+import numpy as np
+import pandas as pd
+
+
+dataset= pd.read_csv("G:/technical/python/bikerent/train.csv")
+
+test= pd.read_csv("G:/technical/python/bikerent/test.csv")
+
+
+target = dataset["count"].values
+
+train = dataset
+
+#feature engineering of train
+
+
+
+#feature engineering of test
+
+date = test["datetime"]
+
+#drop some redundant columns
+train.drop(["datetime","casual","registered" , "count"], axis=1, inplace=True)
+
+test.drop(["datetime"], axis=1, inplace=True)
+
+
+         
+            
+
+
+        
+model = RandomForestClassifier(n_estimators=100)
+
+model.fit(train, target)
+
+prediction = model.predict(test)
+
+
+pred = pd.DataFrame({'count':prediction})
+my_solution= pd.concat([date , pred] ,axis=1)
+
+
+
+my_solution.to_csv("G:/technical/python/bikerent/randomforest.csv", index = False)
+
+
+
+2011-01-20 00:00:00
+#practice
+import pandas as pd
+a=pd.DataFrame({'d':["5","9"] ,'c':['d/d','cc/e']})
+b=a["d"]
+e= a["c"]
+
+p = ['2','3']
+pr=pd.DataFrame({'l':p})
+print(pr)
+
+result = pd.concat([b, e], axis=1)
+print(result)
